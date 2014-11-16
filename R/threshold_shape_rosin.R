@@ -2,6 +2,8 @@ threshold_shape_rosin <- function (x, thresholds=100) {
   # translated from 
   # http://clickdamage.com/sourcecode/code/rosinThreshold.m
   
+  picknonempty = NULL # ???
+  
   if (length(thresholds)==1)
     thresholds <- seq(min(x), max(x), length.out=thresholds)
   
