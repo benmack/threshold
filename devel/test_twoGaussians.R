@@ -10,7 +10,9 @@ th_Kapur <- threshold_entropy_Kapur(ds$x, breaks=breaks)
 plot(th_Kapur, y_range=range(th_Kapur$h))
 
 ### cluster
-th_Nmm <- threshold_cluster_nmm(ds$x, breaks=breaks)
+th_Nmm <- threshold_cluster_nmm(ds$x)
+plot_nmm(th_Nmm)
+
 h <- hist(x, breaks=50, freq=FALSE)
 plot(th_Nmm, y_range=range(h$density))
 
