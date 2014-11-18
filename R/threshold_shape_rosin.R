@@ -44,12 +44,18 @@ threshold_shape_rosin <- function (x, thresholds=100) {
   if (found == -999) {
     found = max(x);
   }
+
+  h = hist(x, breaks="Scott", plot=FALSE)
+  model=list(x = thresholds,
+             density = dens,
+             logspline_fit=fit,
+             h = h,
+             points=data.frame(x=c(p1[1], p2[1]),
+                               y=c(p1[2], p2[2])))
+
+  threshold = found
+  attr(threshold, "method") <- 'rosin'
+  attr(threshold, "model") <- model
   
-rtrn <- structure(list(threshold = found, 
-                         method="shape_rosin", 
-                      model=list(thresholds = thresholds, 
-                                 density = dens, 
-                                 logspline_fit=fit,
-                                 p1=p1, p2=p2),
-                  class="threshold"))
+  structure(threshold, class="threshold")
 }

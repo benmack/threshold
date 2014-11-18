@@ -1,0 +1,37 @@
+---
+title: "ThReshold selection for one-class classifiers."
+author: "Knecmab"
+date: "Tuesday, November 18, 2014"
+output: html_document
+---
+
+ThReshold selection
+========================
+
+First lets load the package and get a data set.
+
+```{r, message=FALSE}
+require(threshold)
+ds <- twoGaussians(c(2000, 10000), 
+                   m.pos=1, sd.pos=2, seed=123)
+hist(ds$x, breaks='Scott', freq=FALSE)
+```
+
+And see what the different threshold selection methods do.
+
+`rosin` threshold:
+
+```{r, warning=FALSE, message=FALSE}
+th_rosin <- find_threshold(ds$x, method="rosin")
+plot.threshold(th_rosin)
+```
+
+`vallesy` thresholds:
+
+```{r, warning=FALSE, message=FALSE}
+
+```
+
+
+
+

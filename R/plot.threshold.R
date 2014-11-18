@@ -1,6 +1,6 @@
 #' @method plot threshold
 #' @export 
-plot.threshold <- 
+plot.threshold_deprecated <- 
   function(x, add=FALSE, y_range=NULL, ...) {
     
     plot_shape_pav <- function(x, add=FALSE, ...) {
