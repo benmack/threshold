@@ -1,41 +1,32 @@
 #' @import logspline
 #' @export
-find_threshold <- function(x, method='rosin') {
+find_threshold <- function(x, method='rosin', x_eval=101, ...) {
   require(logspline)
   
+  all_thresholds <- vector('list', length(methods))
+  names(all_thresholds) <- method
+  
+  if (length(x_eval)==1)
+    x_eval <- seq(min(x), max(x), length.out=x_eval)
+  
   if (method=='rosin') {
-    th <- threshold_shape_rosin(x, thresholds=100)
-    
+    all_thresholds[['rosin']] <- threshold_rosin(x, x_eval=x_eval)
   }
-  return(th)
+  if (method=='valleys') {
+    all_thresholds[['valleys']] <- threshold_valleys(x, x_eval=x_eval)
+  }
+  if (method == 'nmm') {
+    all_thresholds[['nmm']] <- threshold_nmm(x, x_eval=x_eval, ...)
+  }
+  if (method == 'entropy') {
+    all_thresholds[['entropy']] <- threshold_entropy(x)
+  }
+  
+  if (length(all_thresholds)==1) {
+    all_thresholds <- all_thresholds[[1]]
+  } else {
+    # create a class: 'list_of_thresholds' 
+  }
+  return(all_thresholds)
 }
 
-#' @method plot threshold
-#' @export
-plot.threshold <- function(x) {
-  
-  method <- attr(x, 'method')
-  if (method == 'rosin') {
-    pnts <- attr(x, 'model')$points
-    plot(attr(x, 'model')$h, freq=FALSE, 
-         border="darkgrey", 
-         main=paste0("Method: ", method))
-    lines(attr(x, 'model')$x, attr(x, 'model')$density, 
-          lwd=2)
-    points(pnts$x, 
-           pnts$y, lwd=2)
-    # abline(lm(y~x, pnts), lwd=2)
-    abline(v=x, lwd=2)
-}
-  
-  
-}
-
-#' @method print threshold
-#' @export
-print.threshold <- function(x) {
-  method <- attr(x, 'method')
-  attributes(x) <- NULL
-  print(paste0("Threshold(s): ", signif(x)))
-  print(paste0("Method: ", method))
-}

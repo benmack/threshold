@@ -1,0 +1,8 @@
+#' @method print threshold
+#' @export
+print.threshold <- function(x) {
+  method <- attr(x, 'method')
+  attributes(x) <- NULL
+  print(paste0("Threshold(s): ", signif(x)))
+  print(paste0("Method: ", method))
+}

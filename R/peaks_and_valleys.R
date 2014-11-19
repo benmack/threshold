@@ -1,44 +1,47 @@
 #' @export
-peaks_and_valleys <- function(x, thresholds=100) {
+peaks_and_valleys <- function(x, x_eval=101) {
   require(logspline)
   
-  
-  if (length(thresholds)==1)
-    thresholds <- seq(min(x), max(x), length.out=thresholds)
+  if (length(x_eval)==1)
+    x_eval <- seq(min(x), max(x), length.out=x_eval)
   
   fit <- logspline(x)
-  dens <- dlogspline(thresholds, fit)
+  dens <- dlogspline(x_eval, fit)
   
-  thresholds_deri <- thresholds[-1]-(diff(thresholds)/2)
-  deri <- diff(dens)/diff(thresholds)
+  x_eval_deri <- x_eval[-1]-(diff(x_eval)/2)
+  deri <- diff(dens)/diff(x_eval)
   
-  thresholds_deri2 <- thresholds_deri[-1]-(diff(thresholds_deri)/2)
-  deri2 <- diff(deri)/diff(thresholds_deri)
+  x_eval_deri2 <- x_eval_deri[-1]-(diff(x_eval_deri)/2)
+  deri2 <- diff(deri)/diff(x_eval_deri)
   
-  thresholds_deri3 <- thresholds_deri2[-1]-(diff(thresholds_deri2)/2)
-  deri3 <- diff(deri2)/diff(thresholds_deri2)
+  x_eval_deri3 <- x_eval_deri2[-1]-(diff(x_eval_deri2)/2)
+  deri3 <- diff(deri2)/diff(x_eval_deri2)
 
-  thresholds_deri4 <- thresholds_deri3[-1]-(diff(thresholds_deri3)/2)
-  deri4 <- diff(deri3)/diff(thresholds_deri3)
+  x_eval_deri4 <- x_eval_deri3[-1]-(diff(x_eval_deri3)/2)
+  deri4 <- diff(deri3)/diff(x_eval_deri3)
  
-  peaks <- valleys <- c()
-  for (i in 2:length(thresholds_deri)) {
+  peaks <- valleys <- valleys_density <- c()
+  for (i in 2:length(x_eval_deri)) {
     if (deri[i-1]>0 & deri[i]<0)
-      peaks <- c( peaks, thresholds[i]  )
+      peaks <- c( peaks, x_eval[i]  )
     if (deri[i-1]<0 & deri[i]>0)
-      valleys <- c( valleys, thresholds[i]  )
+      valleys <- c( valleys, x_eval[i]  )
+      # valleys_density <- c( valleys_density, mean(dens[i:i+1])  )
   }
+  
+  # points <- 
+  
   return(list(peaks=peaks, 
               valleys=valleys, 
-              thresholds = thresholds, 
+              x_eval = x_eval, 
               density = dens, 
-              thresholds_deriv = thresholds_deri, 
+              x_eval_deriv = x_eval_deri, 
               derivative = deri,              
-              thresholds_deriv2 = thresholds_deri2, 
+              x_eval_deriv2 = x_eval_deri2, 
               derivative2 = deri2,              
-              thresholds_deriv3 = thresholds_deri3, 
-              derivative3 = deri3,              
-              thresholds_deriv4 = thresholds_deri4, 
-              derivative4 = deri4,              
+#               x_eval_deriv3 = x_eval_deri3, 
+#               derivative3 = deri3,              
+#               x_eval_deriv4 = x_eval_deri4, 
+#               derivative4 = deri4,              
               logspline_fit = fit))
 }

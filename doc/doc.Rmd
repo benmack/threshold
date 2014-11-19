@@ -1,19 +1,18 @@
 ---
-title: "ThReshold selection for one-class classifiers."
+title: "ThReshold selection."
 author: "Knecmab"
 date: "Tuesday, November 18, 2014"
 output: html_document
 ---
 
-ThReshold selection
-========================
+ThReshold selection for bi-modal data.
+================================================================================
 
 First lets load the package and get a data set.
 
 ```{r, message=FALSE}
 require(threshold)
-ds <- twoGaussians(c(2000, 10000), 
-                   m.pos=1, sd.pos=2, seed=123)
+ds <- twoGaussians(seed=123)
 hist(ds$x, breaks='Scott', freq=FALSE)
 ```
 
@@ -23,15 +22,134 @@ And see what the different threshold selection methods do.
 
 ```{r, warning=FALSE, message=FALSE}
 th_rosin <- find_threshold(ds$x, method="rosin")
+th_rosin
 plot.threshold(th_rosin)
 ```
 
-`vallesy` thresholds:
+`valleys` threshold:
 
 ```{r, warning=FALSE, message=FALSE}
-
+th_valleys <- find_threshold(ds$x, method="valleys")
+th_valleys
+plot(th_valleys)
 ```
 
 
+`nmm` threshold:
+
+```{r, warning=FALSE, message=FALSE}
+th_nmm <- find_threshold(ds$x, method="nmm")
+th_nmm
+plot(th_nmm)
+```
 
 
+`entropy` threshold:
+
+```{r, warning=FALSE, message=FALSE}
+th_entropy <- find_threshold(ds$x, method="entropy")
+th_entropy
+plot(th_entropy)
+```
+
+
+ThReshold selection for tri-modal data.
+================================================================================
+
+First lets load the package and get a data set.
+
+```{r, message=FALSE}
+require(threshold)
+ds <- threeGaussians(seed=123)
+hist(ds$x, breaks='Scott', freq=FALSE)
+```
+
+And see what the different threshold selection methods do.
+
+`rosin` threshold:
+
+```{r, warning=FALSE, message=FALSE}
+th_rosin <- find_threshold(ds$x, method="rosin")
+th_rosin
+plot.threshold(th_rosin)
+```
+
+`valleys` threshold:
+
+```{r, warning=FALSE, message=FALSE}
+th_valleys <- find_threshold(ds$x, method="valleys")
+th_valleys
+plot(th_valleys)
+```
+
+
+`nmm` threshold:
+
+```{r, warning=FALSE, message=FALSE}
+th_nmm.g2 <- find_threshold(ds$x, method="nmm", G=2)
+th_nmm.g2
+
+th_nmm.g9 <- find_threshold(ds$x, method="nmm", G=9)
+th_nmm.g9
+
+par(mfrow=c(1,2))
+plot(th_nmm.g2)
+plot(th_nmm.g9)
+```
+
+
+`entropy` threshold:
+
+```{r, warning=FALSE, message=FALSE}
+th_entropy <- find_threshold(ds$x, method="entropy")
+th_entropy
+plot(th_entropy)
+```
+
+
+ThReshold selection for uni-modal data.
+================================================================================
+
+First lets load the package and get a data set.
+
+```{r, message=FALSE}
+require(threshold)
+ds <- twoGaussians(seed=123, m.pos=0)
+hist(ds$x, breaks='Scott', freq=FALSE)
+```
+
+And see what the different threshold selection methods do.
+
+`rosin` threshold:
+
+```{r, warning=FALSE, message=FALSE}
+th_rosin <- find_threshold(ds$x, method="rosin")
+th_rosin
+plot.threshold(th_rosin)
+```
+
+`valleys` threshold:
+
+```{r, warning=FALSE, message=FALSE}
+th_valleys <- find_threshold(ds$x, method="valleys")
+th_valleys
+plot(th_valleys)
+```
+
+
+`nmm` threshold:
+
+```{r, warning=FALSE, message=FALSE}
+th_nmm <- find_threshold(ds$x, method="nmm")
+th_nmm
+plot(th_nmm)
+```
+
+
+`entropy` threshold:
+
+```{r, warning=FALSE, message=FALSE}
+th_entropy <- find_threshold(ds$x, method="entropy")
+th_entropy
+plot(th_entropy)
+```
