@@ -1,15 +1,16 @@
 #' @method plot threshold
 #' @export
-plot.threshold <- function(x) {
+plot.threshold <- function(x, add2hist=FALSE, ylim=NULL) {
   
   clrs.PN <- c(pos='#2166ac', neg='#d6604d')
   
   method <- attr(x, 'method')
   if (any(c('rosin', 'valleys', 'nmm', 'entropy')  == method)) {
     
-    plot(attr(x, 'model')$h, freq=FALSE, 
-         border="darkgrey", 
-         main=paste0("Method: ", method))
+    if (!add2hist)
+      plot(attr(x, 'model')$h, freq=FALSE, 
+           border="darkgrey", 
+           main=paste0("Method: ", method))
     lines(attr(x, 'model')$x, attr(x, 'model')$density, 
           lwd=2)
     abline(v=x, lwd=2)
