@@ -1,3 +1,11 @@
+#' @name threshold_rosin
+#' @title ...
+#' @description ...
+#' @param x ...
+#' @param x_eval ...
+#' @importFrom logspline logspline
+#' @importFrom logspline dlogspline
+#' @export
 threshold_rosin <- function (x, x_eval=101) {
   # translated from 
   # http://clickdamage.com/sourcecode/code/rosinThreshold.m
@@ -10,8 +18,16 @@ threshold_rosin <- function (x, x_eval=101) {
   if (is.null(picknonempty))
     picknonempty = 0
   
-  fit <- logspline(x)
-  dens <- dlogspline(x_eval, fit)
+  fit <- try({logspline(x)})
+  dens <- try({dlogspline(x_eval, fit)})
+
+  if (class(fit)=="try-error") {
+    err <- fit
+    dens <- rep(NA, length(x_eval))
+    p1 <- p2 <- c(NA, NA)
+    found <- -999
+  } else {
+    err <- NULL
   
   mmax2 <- max(dens)
   mpos <- x_eval[which.max(dens)]
@@ -31,21 +47,26 @@ threshold_rosin <- function (x, x_eval=101) {
     found = -999
     for (i in from:to) {
       p0 = c(x_eval[i], dens[i])
-      d = abs((p2[1]-p1[1])*(p1[2]-p0[2]) - (p1[1]-p0[1])*(p2[2]-p1[2]));
+      d = abs((p2[1]-p1[1])*(p1[2]-p0[2]) - 
+                (p1[1]-p0[1])*(p2[2]-p1[2]));
       d = d / DD;
       
-      if ((d > best)) { #  & ((imhist(i)>0) | (picknonempty==0)) ???
+      if ((d > best)) {
         best=d
         found = x_eval[i]
       }
     }
   }
-  
-  if (found == -999) {
+  }
+
+  if (found!=-999) {
     found = max(x);
+  } else {
+    found = NA
   }
 
   threshold = found
+
   if (is.null(threshold))
     threshold <- NA
     
@@ -55,7 +76,8 @@ threshold_rosin <- function (x, x_eval=101) {
              logspline_fit=fit,
              h = h,
              points=data.frame(x=c(p1[1], p2[1]),
-                               y=c(p1[2], p2[2])))
+                               y=c(p1[2], p2[2])), 
+             error = err)
 
   attr(threshold, "method") <- 'rosin'
   attr(threshold, "model") <- model

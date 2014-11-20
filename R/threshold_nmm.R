@@ -1,17 +1,18 @@
 ################################################################################
-#' @title threshold_nmm
+#' @name threshold_nmm
 #' @title Thresholding based on normal mixture modelling.
 #'
 #' @description It is assumed that the data can be descrived by two Gaussians. 
 #' The parameters of the mixture components are estimated with \code{\link[mclust]{Mclust}}. 
 #'  
 #' @param x vector of (pixel) gray levels to be thresholded
-#' @parm range_constrain constrain the range from which to select the threshold  
+#' @param x_eval points which    
 #' @param ... arguemnts passed to mclust 
 #' @references  ...
+#' @importFrom mclust densityMclust
+#' @importFrom mclust predict.densityMclust
 #' @export
 threshold_nmm <- function(x, x_eval=101, ...) {
-  require(mclust)
   
   if (length(x_eval)==1)
     x_eval <- seq(min(x), max(x), length.out=x_eval)

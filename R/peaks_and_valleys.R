@@ -1,6 +1,12 @@
+#' @name peaks_and_valleys 
+#' @title ...
+#' @description ...
+#' @param x ...
+#' @param x_eval ...
+#' @importFrom logspline logspline
+#' @importFrom logspline dlogspline
 #' @export
 peaks_and_valleys <- function(x, x_eval=101) {
-  require(logspline)
   
   if (length(x_eval)==1)
     x_eval <- seq(min(x), max(x), length.out=x_eval)

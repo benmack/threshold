@@ -1,9 +1,15 @@
 Package: threshold
 Type: Package
-Title: What the package does (short line)
-Version: 1.0
-Date: 2014-11-02
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Title: Histogram/density based threshold selection
+Version: 0.0-1
+Date: 2014-11-20
+Author: Benjamin Mack
+Maintainer: Benjamin Mack <knecmab@gmail.com>
+Description: ...
+License: GPL-2
+Imports:
+    logspline,
+    mclust
+LazyLoad: yes
+Roxygen: list(wrap = FALSE)
+URL: https://github.com/benmack/threshold

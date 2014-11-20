@@ -1,4 +1,4 @@
-plot_nmm <- function(x, plotHist=TRUE, add=FALSE, ...) {
+.plot_nmm <- function(x, plotHist=TRUE, add=FALSE, ...) {
   #' @param nmm must be of an object of class "densityMclust" "Mclust"
   
   clrs.PN <- c(pos='#2166ac', neg='#d6604d')

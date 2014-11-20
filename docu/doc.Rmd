@@ -23,7 +23,7 @@ And see what the different threshold selection methods do.
 ```{r, warning=FALSE, message=FALSE}
 th_rosin <- find_threshold(ds$x, method="rosin")
 th_rosin
-plot.threshold(th_rosin)
+plot(th_rosin)
 ```
 
 `valleys` threshold:
@@ -71,7 +71,7 @@ And see what the different threshold selection methods do.
 ```{r, warning=FALSE, message=FALSE}
 th_rosin <- find_threshold(ds$x, method="rosin")
 th_rosin
-plot.threshold(th_rosin)
+plot(th_rosin)
 ```
 
 `valleys` threshold:
@@ -125,7 +125,7 @@ And see what the different threshold selection methods do.
 ```{r, warning=FALSE, message=FALSE}
 th_rosin <- find_threshold(ds$x, method="rosin")
 th_rosin
-plot.threshold(th_rosin)
+plot(th_rosin)
 ```
 
 `valleys` threshold:
