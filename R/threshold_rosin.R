@@ -20,8 +20,10 @@ threshold_rosin <- function (x, x_eval=101) {
   
   fit <- try({logspline(x)})
   dens <- try({dlogspline(x_eval, fit)})
-
-  if (class(fit)=="try-error") {
+  
+  check_dens <- try(sum(!is.finite(dens) |
+                          dens==0)==length(dens))
+  if (class(fit)=="try-error" | check_dens) {
     err <- fit
     dens <- rep(NA, length(x_eval))
     p1 <- p2 <- c(NA, NA)
@@ -51,10 +53,11 @@ threshold_rosin <- function (x, x_eval=101) {
                 (p1[1]-p0[1])*(p2[2]-p1[2]));
       d = d / DD;
       
-      if ((d > best)) {
-        best=d
-        found = x_eval[i]
-      }
+      if ( is.logical(d > best) )
+        if (d > best) { # ...
+          best=d
+          found = x_eval[i]
+        }
     }
   }
   }
