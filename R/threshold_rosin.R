@@ -21,8 +21,8 @@ threshold_rosin <- function (x, x_eval=101) {
   fit <- try({logspline(x)})
   dens <- try({dlogspline(x_eval, fit)})
   
-  check_dens <- try(sum(!is.finite(dens) |
-                          dens==0)==length(dens))
+  check_dens <- try(any(is.infinite(dens)))
+
   if (class(fit)=="try-error" | check_dens) {
     err <- fit
     dens <- rep(NA, length(x_eval))
