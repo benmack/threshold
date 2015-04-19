@@ -6,7 +6,7 @@
 threshold_nmm(x, x_eval = 101, ...)
 }
 \arguments{
-\item{x}{vector of (pixel) gray levels to be thresholded}
+\item{x}{vector of (pixel) gray levels to be thresholded, or an object of class densityMclust Mclust}
 
 \item{x_eval}{points which}
 
