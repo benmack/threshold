@@ -6,7 +6,7 @@
 #' @param x_eval ...
 #' @param ... ...
 #' @export
-find_threshold <- function(x, method='rosin', x_eval=101, ...) {
+find_threshold <- function(x, method='rosin', x_eval=101, x_pos=NULL, ...) {
 
   all_thresholds <- vector('list', length(method))
   names(all_thresholds) <- method
@@ -21,7 +21,7 @@ find_threshold <- function(x, method='rosin', x_eval=101, ...) {
     all_thresholds[['valleys']] <- threshold_valleys(x, x_eval=x_eval)
   }
   if (any(method == 'nmm')) {
-    all_thresholds[['nmm']] <- threshold_nmm(x, x_eval=x_eval, ...)
+    all_thresholds[['nmm']] <- threshold_nmm(x, x_eval=x_eval, x_pos=x_pos, ...)
   }
   if (any(method == 'entropy')) {
     all_thresholds[['entropy']] <- threshold_entropy(x)

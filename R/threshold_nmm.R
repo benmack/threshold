@@ -6,13 +6,14 @@
 #' The parameters of the mixture components are estimated with \code{\link[mclust]{Mclust}}. 
 #'  
 #' @param x vector of (pixel) gray levels to be thresholded, or an object of class densityMclust Mclust
-#' @param x_eval points which    
+#' @param x_eval ...    
+#' @param x_pos A sample of the positive class. If given the overlap between the theoretical positive distribution and the empirical distribution is calculated.
 #' @param ... arguemnts passed to mclust 
 #' @references  ...
 #' @importFrom mclust densityMclust
 #' @importFrom mclust predict.densityMclust
 #' @export
-threshold_nmm <- function(x, x_eval=101, ...) {
+threshold_nmm <- function(x, x_eval=101, x_pos=NULL, ...) {
   
   calcNmm <- TRUE
   if (class(x)[1]=="densityMclust") {
@@ -21,9 +22,9 @@ threshold_nmm <- function(x, x_eval=101, ...) {
     calcNmm <- FALSE
   }
   
-  if (length(x_eval)==1)
+  if (length(x_eval)==1) {
     x_eval <- seq(min(x), max(x), length.out=x_eval)
-  
+  }
   ### --------------------------------------------------------------------------
   ### error/overlap between the (assumed) positive and all other components
   scaled_density_PN <- function(nmm, newdata, comp_pos, returnWhat="PN") {
@@ -79,15 +80,17 @@ threshold_nmm <- function(x, x_eval=101, ...) {
   ys <- c(ys, ys[1])
   pred <- predict(nmm, x_eval, what="cdens")
   pred.scl <- pred*NA
-  for (i in 1:nmm$G)
+  for (i in 1:nmm$G) {
     pred.scl[,i] <- pred[,i]*nmm$parameters$pro[i]
-  
+  }
   ### assuming the component with the highest mean belongs 
   # to the positive class, which is the best threshold
   comp.pos <- which.max(nmm$parameters$mean)
   prior.pos <- nmm$parameters$pro[comp.pos]
   # we need to exclude numerically non meaningful behaviour at the tails
   ans <- pred.scl[, comp.pos]>=rowSums(pred.scl[, -comp.pos, drop=FALSE])  
+  if(all(!ans))
+    warning("Could not identify a threshold.\nCould not find any threshold for which the posterior of the positive class ( p(+|x) ) is larger than 0.5.")
   
   ans[x_eval<min(nmm$parameters$mean)] <- FALSE
   if (length(which(ans))==0) {
@@ -100,9 +103,22 @@ threshold_nmm <- function(x, x_eval=101, ...) {
   # idx_th <- which(x_eval == threshold)
   
   rng <- nmm$range
-  err <- integrate(min_f1f2, lower=rng[1], upper=rng[2], model=nmm,
-                   subdivisions=100L)
-  
+  # cat(rng)
+  err <- integrate(min_f1f2, lower=rng[1], upper=rng[2], model=nmm, subdivisions=100L)
+  distPos <- list()
+  if (!is.null(x_pos)) {
+    x_pos_noOut <- x_pos[!(x_pos %in% boxplot.stats(x_pos)$out)]
+    theo_std_pos <- sqrt(ifelse(nmm$parameters$variance$modelName=="E",
+                           nmm$parameters$variance$sigmasq[1], 
+                           nmm$parameters$variance$sigmasq[comp.pos]))
+    distPos$theo = list(mean=nmm$parameters$mean[comp.pos], 
+                sd=theo_std_pos)
+    distPos$empi = list(mean=mean(x_pos_noOut), 
+                sd=sd(x_pos_noOut))
+    distPos$overlap <- getOverlap_PP(theo=distPos$theo, empi=distPos$empi)
+  } else {
+    distPos$overlap <- distPos$theo <- distPos$empi <- NA
+  }
   #   # ALL. Should be ~1  
   #   integrate(predict, lower=rng[1], upper=rng[2],
   #             object=nmm, comp_pos=comp.pos, returnWhat="P", 
@@ -131,23 +147,32 @@ threshold_nmm <- function(x, x_eval=101, ...) {
   }
   # TP+FN+FP+TN
   
-  confmat <- matrix(round(c(TP, FN, FP, TN), 2), 2, 2)
-  rownames(confmat) <- c("refP", "refN")
-  colnames(confmat) <- c("clP", "clN")
-  
-  rtrn <- structure(list(threshold = threshold, 
-                         method="cluster_nmm", 
-                         nmm=nmm, 
-                         error_rate=err,
-                         confmat=confmat,
-                         forPlot=list(rng=rng,
-                                      xs=xs,
-                                      ys=ys,
-                                      x_eval=x_eval,
-                                      pred.scl=pred.scl,
-                                      comp.pos=comp.pos, 
-                                      densAtTh=densAtTh)),
-                    class="threshold")
+  confmat <- matrix(signif(c(TP, FN, FP, TN), 3), 2, 2)
+  rownames(confmat) <- c("P", "N")
+  colnames(confmat) <- c("P", "N")
+  if (!is.na(threshold)) {
+    acc = confusionMatrix(as.table(round(confmat*1000, 0)))
+  } else {
+    acc <- NA
+  }
+#   confmat <- matrix(signif(c(TP/(TP+FN), FN/(TP+FN), 
+#                              FP/(FP+TN), TN/(FP+TN)), 3), 2, 2)
+#   rownames(confmat) <- c("refP", "refN")
+#   colnames(confmat) <- c("clP", "clN")
+
+#   rtrn <- structure(list(threshold = threshold, 
+#                          method="cluster_nmm", 
+#                          nmm=nmm, 
+#                          error_rate=err,
+#                          confmat=confmat,
+#                          forPlot=list(rng=rng,
+#                                       xs=xs,
+#                                       ys=ys,
+#                                       x_eval=x_eval,
+#                                       pred.scl=pred.scl,
+#                                       comp.pos=comp.pos, 
+#                                       densAtTh=densAtTh)),
+#                     class="threshold")
   
   
   
@@ -169,7 +194,9 @@ threshold_nmm <- function(x, x_eval=101, ...) {
   
   attr(threshold, "method") <- 'nmm'
   attr(threshold, "model") <- model
+  attr(threshold, "distPos") <- distPos
   attr(threshold, "confmat") <- confmat
+  attr(threshold, "acc") <- acc
   attr(threshold, "error_rate") <- err$value
   
   threshold <- structure(threshold, class="threshold")

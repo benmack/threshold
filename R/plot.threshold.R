@@ -37,6 +37,7 @@ plot.threshold <- function(x, add2hist=FALSE, ylim=NULL, ...) {
       lines(model$x, scaled_opt, lwd=2)
     }
     if (method=='nmm') {
+      distPos <- attr(x, 'distPos')
       # NOT AVAILABLE: polygon(x$forPlot$xs, x$forPlot$ys, col="gray")
       for (i in 1:model$nmm$G) {
         clr = ifelse(i==model$comp_pos, clrs.PN['pos'], clrs.PN['neg'])
@@ -44,8 +45,15 @@ plot.threshold <- function(x, add2hist=FALSE, ylim=NULL, ...) {
         lines(model$x, dnorm(model$x,
                              mean=model$nmm$parameters$mean[i],
                              sd=sqrt(model$nmm$parameters$variance$sigmasq[idx.sd]) )*
-                model$nmm$parameters$pro[i], col=clr, lwd=2 )
+                model$nmm$parameters$pro[i], col=clr, lwd=2)
+        
       }
+      if (!is.null(distPos$empi$mean))
+        lines(model$x, dnorm(model$x, 
+                             mean=distPos$empi$mean, 
+                             sd=distPos$empi$sd) * 
+                             model$nmm$parameters$pro[model$comp_pos],
+              lwd=2, lty=3, col=clrs.PN['pos'])
     }
   }
 }
