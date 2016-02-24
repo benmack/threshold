@@ -16,15 +16,10 @@ plot.threshold <- function(x, add2hist=FALSE, ylim=NULL, ...) {
     
     if (!add2hist)
       plot(attr(x, 'model')$h, freq=FALSE, 
-           border="darkgrey", 
            main=paste0("Method: ", method))
-    lines(attr(x, 'model')$x, attr(x, 'model')$density, 
-          lwd=2)
     abline(v=x, lwd=2)
     
-    
     model <- attr(x, 'model')
-    
     
     if (method=='rosin') {
       points(model$points$x, 
@@ -48,12 +43,12 @@ plot.threshold <- function(x, add2hist=FALSE, ylim=NULL, ...) {
                 model$nmm$parameters$pro[i], col=clr, lwd=2)
         
       }
-      if (!is.null(distPos$empi$mean))
-        lines(model$x, dnorm(model$x, 
-                             mean=distPos$empi$mean, 
-                             sd=distPos$empi$sd) * 
-                             model$nmm$parameters$pro[model$comp_pos],
-              lwd=2, lty=3, col=clrs.PN['pos'])
+#       if (!is.null(distPos$empi$mean))
+#         lines(model$x, dnorm(model$x, 
+#                              mean=distPos$empi$mean, 
+#                              sd=distPos$empi$sd) * 
+#                              model$nmm$parameters$pro[model$comp_pos],
+#               lwd=2, lty=2, col=clrs.PN['pos'])
     }
   }
 }
