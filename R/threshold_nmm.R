@@ -12,6 +12,7 @@
 #' @references  ...
 #' @importFrom mclust densityMclust
 #' @importFrom mclust predict.densityMclust
+#' @importFrom caret confusionMatrix
 #' @export
 threshold_nmm <- function(x, x_eval=101, x_pos=NULL, ...) {
   
