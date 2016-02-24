@@ -1,0 +1,62 @@
+---
+title: "ThReshold selection for one-class classifiers."
+author: "Knecmab"
+date: "Tuesday, November 18, 2014"
+output: html_document
+---
+
+One-class classification
+========================
+
+Threshold selection is a critical step during one-class classification. 
+The package `thReshold` provides methods for this task. 
+
+The one-class classifiction problem can be solved with positive data only (LEFT plot), positive and unlabeled data (MIDDLE plot). It is different from a binary supervised classifier with respect to the training data (RIGHT plot.) 
+
+```{r, echo=FALSE, fig.height=3, message=FALSE}
+require(oneClass)
+data(bananas)
+x.pu <- bananas$tr[, -1]
+y.pu <- bananas$tr[, 1]
+
+idx.p <- y.pu==1
+x.p <- x.pu[idx.p, ]
+y.p <- y.pu[idx.p]
+
+set.seed(6)
+idx.n <- sample(which(bananas$y[]==-1), nrow(x.p))
+x.pn <- rbind(x.p, bananas$x[][idx.n,])
+y.pn <- rep(c(1,0), each=nrow(x.p))
+
+par(mfrow=c(1,3))
+plot(x.p$x1, x.p$x2, pch=16, xlab="x1", ylab="x2")
+plot(x.pu$x1, x.pu$x2, pch=c(4, 16)[y.pu+1],
+     xlab="x1", ylab="x2")
+plot(x.pn$x1, x.pn$x2, pch=c(1, 16)[y.pu+1],
+     xlab="x1", ylab="x2")
+```
+
+Using a one-class SVM we might find a model as shown in the next plot below. 
+(Note that in the case of the one-class SVM only the positive data can be used for model training but in the `oneClass` package the unlabeled data is used for model selection.)
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+require(oneClass)
+fit <- trainOcc(x=x.pu, y=y.pu, method='ocsvm')
+pred <- predict(fit, bananas$x[])
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.height=5, fig.width=5, results='asis', out.extra=''}
+featurespace(fit, threshold=0)
+```
+
+Applying this model to the whole unlabeled data to be classified leads to the histogram of predictive values shown in the next plot. 
+The distributions of the hold-out training data predictions is shown as boxplots below the histogram. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.height=4, fig.width=5, results='asis', out.extra=''}
+hist(fit, pred)
+abline(v=0, lwd=2)
+```
+
+ThReshold selection
+========================
+

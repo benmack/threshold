@@ -1,5 +1,5 @@
 ---
-title: "ThReshold selection."
+title: "ThReshold"
 author: "Knecmab"
 date: "Tuesday, November 18, 2014"
 output: html_document
@@ -157,16 +157,14 @@ plot(th_entropy)
 ThReshold selection - run all at once.
 ================================================================================
 
-```{rU}
+```{r, warning=FALSE, message=FALSE}
 ths <- find_threshold(ds$x, method=c("rosin", "entropy", "valleys", "nmm"))
 ths
 plot(ths)
-plot(ths)
-
 
 # You might also want to compare it to another set of thresholds.
 plot(ths, ths_add=list('my_th_1'=c(1),
-                       'my_th_2'=c(4, 4.2)))
+                       'my_th_2'=c(2, 2.5)))
 
 
 ```

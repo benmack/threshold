@@ -8,8 +8,10 @@ Maintainer: Benjamin Mack <knecmab@gmail.com>
 Description: ...
 License: GPL-2
 Imports:
-    logspline,
     mclust
+ImportsFrom:
+    caret
 LazyLoad: yes
 Roxygen: list(wrap = FALSE)
 URL: https://github.com/benmack/threshold
+RoxygenNote: 5.0.1
