@@ -11,7 +11,7 @@ threshold_rosin <- function (x, x_eval="FD") {
   
   picknonempty = NULL # ???
   
-  if (class(x) != "hist") {
+  if (class(x) != "histogram") {
     x <- hist(x, breaks=x_eval, plot=F)
   }
   x_eval <- x$mids
