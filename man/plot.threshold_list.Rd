@@ -5,7 +5,7 @@
 \title{...}
 \usage{
 \method{plot}{threshold_list}(x, ths_add = NULL, names_add = NULL,
-  add2hist = FALSE, ylim = NULL, ...)
+  add2hist = FALSE, ylim = NULL, xlim = NULL, ...)
 }
 \arguments{
 \item{x}{...}

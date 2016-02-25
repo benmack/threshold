@@ -4,7 +4,8 @@
 \alias{plot.threshold}
 \title{...}
 \usage{
-\method{plot}{threshold}(x, add2hist = FALSE, ylim = NULL, ...)
+\method{plot}{threshold}(x, add2hist = FALSE, ths_add = NULL,
+  names_add = NULL, ylim = NULL, xlim = NULL, right_leg = TRUE, ...)
 }
 \arguments{
 \item{x}{...}
