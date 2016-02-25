@@ -9,11 +9,9 @@
 #' @param ... ...
 #' @method plot threshold_list
 #' @export
-plot.threshold_list <- function(x, ths_add=NULL, names_add=NULL, add2hist=FALSE, ylim=NULL, ...) {
+plot.threshold_list <- function(x, ths_add=NULL, names_add=NULL, add2hist=FALSE, ylim=NULL, xlim=NULL, ...) {
   
   clrs.PN <- c(pos='#2166ac', neg='#d6604d')
-  
-  x <- x
   
   if (!add2hist)
     plot(attr(x[[1]], 'model')$h, freq=FALSE, 
@@ -39,11 +37,15 @@ plot.threshold_list <- function(x, ths_add=NULL, names_add=NULL, add2hist=FALSE,
   if (is.null(ylim)) {
     ylim <- range(h$density)
   }
-    pos.y <- ylim[2]-(ylim[2]/15*1:length(x))
+  if (is.null(ylim)) {
+    xlim <- range(h$mids)
+  }
   
-  pos.x <- rep(min(h$mids)+diff(range(h$mids))/10, 
-                 length(x))
-
+  pos.y <- ylim[2]-(ylim[2]/15*1:length(x))
+  
+  pos.x <- rep(min(xlim)+diff(range(xlim))/10, 
+               length(x))
+  
   for (i in 1:length(x)) {
     abline(v=x[[i]], lwd=2, lty="solid")
     text(pos.x[i], pos.y[i], names(x)[i], cex=.75, pos=2)
