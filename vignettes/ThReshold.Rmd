@@ -18,7 +18,7 @@ hist(ds$x, breaks='Scott', freq=FALSE)
 
 And see what the different threshold selection methods do.
 
-`rosin` threshold:
+`rosin` threshold: 
 
 ```{r, warning=FALSE, message=FALSE}
 th_rosin <- find_threshold(ds$x, method="rosin")
